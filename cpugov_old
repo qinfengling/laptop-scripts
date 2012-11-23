@@ -1,0 +1,48 @@
+#!/bin/bash
+export user=`whoami`
+## Check if root
+if [ $user != "root" ]; then
+	echo -e "	\e[1;31m! Potrzeba uprawnień roota !\e[0m"
+else
+	echo -e "	\e[1;29mWybierz opcję:\e[0m"
+	echo "1. Sprawdź aktualny governor"
+	echo "2. Ustaw 'conservative'"
+	echo "3. Ustaw 'ondemand'"
+	echo "4. Ustaw 'powersave'"
+	echo "5. Ustaw 'performance'"
+	echo "6. Wyjdź"
+	read wybor
+	if [ $wybor = "1" ]; then
+		export cur0=`sudo cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+		export cur1=`sudo cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor`
+		echo -e "Aktualny governor to:\e[1;32m$cur0/$cur1\e[0m"
+	fi
+	if [ $wybor = "2" ]; then
+		echo conservative > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+		echo conservative > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+		export cur0=`sudo cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+		export cur1=`sudo cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor`
+		echo -e "Nowy governor to:\e[1;34m$cur0/$cur1\e[0m"
+	fi
+	if [ $wybor = "3" ]; then
+		echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+		echo ondemand > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+		export cur0=`sudo cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+		export cur1=`sudo cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor`
+		echo -e "Nowy governor to:\e[1;34m$cur0/$cur1\e[0m"
+	fi
+	if [ $wybor = "4" ]; then
+		echo powersave > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+		echo powersave > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+		export cur0=`sudo cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+		export cur1=`sudo cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor`
+		echo -e "Nowy governor to:\e[1;34m$cur0/$cur1\e[0m"
+	fi
+	if [ $wybor = "5" ]; then
+		echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+		echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+		export cur0=`sudo cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+		export cur1=`sudo cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor`
+		echo -e "Nowy governor to:\e[1;34m$cur0/$cur1\e[0m"
+	fi
+fi

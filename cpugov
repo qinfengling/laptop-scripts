@@ -1,0 +1,50 @@
+#!/bin/bash
+user=`whoami`
+function usage {
+	echo "usage: $0 [check|ondemand|powersave|performance|conservative]"
+	exit
+}
+function change {
+	echo $1 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+	echo $1 > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+}
+## Check if root
+if [ $user != "root" ]; then
+	echo -e "	\e[1;31m! Potrzeba uprawnień roota !\e[0m"
+else
+	cur0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+	cur1=`cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor`
+	if [ $# == 1 ] ; then
+		wybor=$1
+	else		
+		select wybor in check ondemand powersave performance conservative
+		do
+			break
+		done
+	fi
+	if [ "$wybor" == "$cur0" ] && [ "$wybor" == "$cur1" ]; then
+		echo -e "	\e[1;34mIt's already $cur0/$cur1\e[0m"
+	else
+		case $wybor in
+		check)
+			echo -e "Current governor: \e[1;32m$cur0/$cur1\e[0m" ;;
+		clearcheck)
+			echo $cur0 ;;
+		conservative)
+			change conservative;;
+		ondemand)
+			change ondemand;;
+		powersave)
+			change powersave;;
+		performance)
+			change performance;;
+		*) usage;;
+		esac
+
+		if [ "$wybor" != 'check' ] && [ "$wybor" != 'clearcheck' ]; then
+			cur0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+			cur1=`cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor`
+			echo -e "New governor: \e[1;34m$cur0/$cur1\e[0m"
+		fi
+	fi
+fi

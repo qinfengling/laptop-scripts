@@ -1,0 +1,41 @@
+#!/bin/bash
+export user=`whoami`
+## Check if root
+if [ $user != "root" ]; then
+	echo -e "	\e[1;31m! Potrzeba uprawnień roota !\e[0m"
+else
+	export cpu0_min=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq`
+	export cpu1_min=`cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq`
+	export cpu0_cur=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq`
+	export cpu1_cur=`cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_cur_freq`
+
+	## Check if not already
+	if [ $cpu0_cur = "1667000" ] && [ $cpu1_cur = "1667000" ]; then
+		echo -e "	\e[1;32m! Już jest 1.6GHz !\e[0m"
+	else
+		## CPU0
+		if [ $cpu0_min -gt "1667000" ]; then
+			echo 1667000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+			echo 1667000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+		else
+			echo 1667000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+			echo 1667000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+		fi
+
+		## CPU1
+		if [ $cpu1_min -gt "1667000" ]; then
+			echo 1667000 > /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq
+			echo 1667000 > /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+		else
+			echo 1667000 > /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+			echo 1667000 > /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq
+		fi
+		## Print new frequencies
+		export cpu0_cur=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq`
+		cpu0_cur_GHz=$(echo "scale=2;$cpu0_cur/1000000;"|bc)
+		export cpu1_cur=`cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_cur_freq`
+		cpu1_cur_GHz=$(echo "scale=2;$cpu1_cur/1000000;"|bc)
+
+		echo -e "	\e[1;34mNowa częstotliwość to: $cpu0_cur_GHz/$cpu0_cur_GHz GHz\e[0m"
+	fi
+fi

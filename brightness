@@ -1,0 +1,33 @@
+#!/bin/bash
+export user=`whoami`
+## Check if root
+if [ $user != "root" ]; then
+	echo -e "	\e[1;31m! Potrzeba uprawnień roota !\e[0m"
+else
+	export cur=`cat /sys/class/backlight/acpi_video0/brightness`
+	if [ "$1" != "" ] && [ $1 -ge "0" ] && [ $1 -le "7" ] && [ $1 != $cur ]; then
+		echo $1 > /sys/class/backlight/acpi_video0/brightness
+		export cur=`cat /sys/class/backlight/acpi_video0/brightness`
+		echo -e "Nowa jasność to:\e[1;34m$cur\e[0m"
+	elif [ "$1" == "$cur" ]; then
+		echo -e "\e[1;33mJuż jest $cur\e[0m"
+	else
+		export cur=`cat /sys/class/backlight/acpi_video0/brightness`
+	
+		echo -e "	\e[1;29mWybierz opcję:\e[0m"
+		echo "0-7 Ustaw jasność"
+		echo "8. Sprawdź aktualną jasność"
+		echo "9. Wyjdź"
+		read wybor
+		if [ $wybor -le "7" ]; then
+			echo $wybor > /sys/class/backlight/acpi_video0/brightness
+			export cur=`cat /sys/class/backlight/acpi_video0/brightness`
+			echo -e "Nowa jasność to:\e[1;34m$cur\e[0m"
+		fi
+		if [ $wybor == "8" ]; then
+			export cur=`sudo cat /sys/class/backlight/acpi_video0/brightness`
+			echo -e "Aktualna jasność to:\e[1;32m$cur\e[0m"
+		fi
+	fi
+
+fi

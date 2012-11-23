@@ -1,0 +1,21 @@
+#!/bin/bash
+export user=`whoami`
+## Check if root
+if [ $user != "root" ]; then
+	echo -e "	\e[1;31m! Potrzeba uprawnień roota !\e[0m"
+else
+	export cpu0_min=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq`
+	export cpu0_max=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq`
+	export cpu1_min=`cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq`
+	export cpu1_max=`cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq`
+	
+	## Check if not already
+	if [ $cpu0_min = "1000000" ] && [ $cpu0_max = "2000000" ] && [ $cpu1_min = "1000000" ] && [ $cpu1_max = "2000000" ]; then
+		echo -e "	\e[1;32m! Już jest domyślnie !\e[0m"
+	else
+		echo 2000000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+		echo 1000000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+		echo 2000000 > /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+		echo 1000000 > /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq
+	fi
+fi

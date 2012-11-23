@@ -1,0 +1,13 @@
+#!/bin/sh
+#FreeDNS updater script
+
+UPDATEURL="http://freedns.afraid.org/dynamic/update.php?VDk0TTE2MzFVMVVBQUJoR0VaZ0FBQUFFOjc4MDA5MDM="
+DOMAIN="jakubchmura.pl"
+
+registered=$(nslookup $DOMAIN|tail -n2|grep A|sed s/[^0-9.]//g)
+
+  current=$(wget -q -O - http://checkip.dyndns.org|sed s/[^0-9.]//g)
+       [ "$current" != "$registered" ] && {                           
+          wget -q -O /dev/null $UPDATEURL 
+          echo "DNS updated on: $(date)" >> ~/public_html/DNS-log.log
+  }

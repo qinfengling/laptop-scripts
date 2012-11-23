@@ -1,0 +1,27 @@
+#!/bin/sh
+
+ARTIST=`mpc -f "%artist%" current | sed -e s/"&"/"&amp;"/`
+ALBUM=`mpc -f "%album%" current | sed -e s/"&"/"&amp;"/`
+TITLE=`mpc -f "%title%" current`
+
+
+if [ "$ARTIST" != "" ] && [ "$ALBUM" != "" ]
+    then
+        LINETWO=$ARTIST"
+"$ALBUM
+
+
+elif [ "$ARTIST" != "" ] && [ "$ALBUM" == ""  ]
+    then
+        LINETWO=$ARTIST
+
+
+elif [ "$ARTIST" == "" ] && [ "$ALBUM" != ""  ]
+    then
+        LINETWO=$ALBUM
+
+else
+        LINETWO=""
+fi
+
+notify-send "$TITLE" "$LINETWO" -u low -t 2500 -h int:x:875 -h int:y:25 -i /usr/share/icons/Faenza/emblems/48/emblem-sound.png -h string:synchronous:mpd
