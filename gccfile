@@ -1,0 +1,14 @@
+#!/bin/bash
+
+ostatni=$[$#-1]
+i=0
+for par in $@; do
+	tablica[$i]=$par
+	if [ $i -ne $ostatni ]; then
+		args[$i]=$par
+		i=$[i+1]
+	fi
+done
+ostatni_element=${tablica[$ostatni]}
+plik=$(echo -n $ostatni_element | sed "s/\.c/\.o/")
+/usr/bin/gcc ${args[@]} -o $plik $ostatni_element
