@@ -1,4 +1,15 @@
 #!/bin/bash
 
-systemctl suspend &
-su kuba -c slock
+systemctl suspend
+user=`whoami`
+if [ "$user" == "kuba" ]; then
+	slock
+else
+	su kuba -c slock 
+fi
+RUNNING=`ps --no-headers -C tint2 | wc -l`
+if [ $RUNNING -gt 1 ]; then
+	sleep 5
+	killall tint2
+	tint2 &
+fi
