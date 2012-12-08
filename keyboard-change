@@ -1,0 +1,8 @@
+#!/bin/bash
+if [ `setxkbmap -print | grep xkb_symbols | awk '{print $4}' | awk -F"+" '{print $2}'` == pl ] ; then 
+	setxkbmap fr
+	notify-send " " "FR" -t 2500 -i /home/kuba/.flags/France-Flag-48.png
+else 
+	setxkbmap pl
+	notify-send " " "PL" -t 2500 -i /home/kuba/.flags/Poland-Flag-48.png
+fi
