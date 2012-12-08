@@ -8,8 +8,8 @@ else
 	su kuba -c slock 
 fi
 RUNNING=`ps --no-headers -C tint2 | wc -l`
-if [ $RUNNING -gt 1 ]; then
-	sleep 5
+if [ $RUNNING -gt 0 ]; then
+	#sleep 1
 	killall tint2
 	tint2 &
 fi
