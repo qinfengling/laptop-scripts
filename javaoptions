@@ -1,0 +1,14 @@
+#!/bin/bash
+
+case $1 in
+	"on")
+		export _JAVA_OPTIONS='-Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel -Dawt.useSystemAAFontSettings=on -Dswing.crossplatformlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
+		echo "_JAVA_OPTIONS=$_JAVA_OPTIONS"
+		;;
+	"off")
+		export _JAVA_OPTIONS=''
+		echo "_JAVA_OPTIONS=$_JAVA_OPTIONS"
+		;;
+	*)
+		echo "usage: $(basename $0) on|off"
+esac

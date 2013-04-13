@@ -1,0 +1,35 @@
+#!/bin/bash
+umount=false
+
+while [ $# -gt 0 ];
+do
+	case $1 in
+			"-u" )
+				umount=true
+				;;
+			"raspi" )
+				if $umount ; then
+					if [ `df | grep raspi | wc -l` == 0 ]; then
+						echo "raspi not mounted"
+					else
+						fusermount -u ~/mnt/raspi
+						if [ `df | grep raspi | wc -l` == 0 ]; then
+							echo "unmounted ~/mnt/raspi"
+						fi
+					fi
+				else
+					if [ `df | grep raspi | wc -l` == 1 ]; then
+						echo "raspi already mounted"
+					else
+						sshfs raspi: ~/mnt/raspi
+						if [ `df | grep raspi | wc -l` == 1 ]; then
+							echo "mounted ~/mnt/raspi"
+						fi
+					fi
+				fi
+				;;
+			*)
+				echo "usage: $(basename $0) [-u] raspi"
+	esac
+	shift
+done
